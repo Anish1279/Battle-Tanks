@@ -278,6 +278,7 @@ function PlayerTank({ inputRef }) {
       linearDamping={PHYSICS.tankLinearDamping}
       angularDamping={PHYSICS.tankAngularDamping}
       enabledRotations={[false, true, false]}
+      ccd={true}
       userData={{ type: 'player' }}
     >
       {/* Compound collider: cuboid body + bottom sphere "belly" for smooth terrain traversal */}

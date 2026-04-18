@@ -352,6 +352,7 @@ function EnemyTank({ enemyData, playerPositionRef }) {
       restitution={PHYSICS.tankRestitution}
       enabledRotations={[false, true, false]}
       colliders={false}
+      ccd={true}
       userData={{ type: 'enemy', enemyId: enemyData.id }}
     >
       {/* Compound collider: cuboid body + ball belly for smooth terrain traversal */}
