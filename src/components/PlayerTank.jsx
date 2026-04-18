@@ -191,20 +191,7 @@ function PlayerTank({ inputRef }) {
       curVel = { x: 0, y: 0, z: 0 }
     }
 
-    let vY = (curVel && !isNaN(curVel.y)) ? curVel.y : 0
-
-    // Slope climbing boost: if we're moving but our horizontal speed is
-    // blocked (terrain edge), add upward impulse to climb over it
-    if (Math.abs(currentSpeed.current) > 1) {
-      const actualHorizSpeed = Math.sqrt(
-        (curVel?.x || 0) * (curVel?.x || 0) + (curVel?.z || 0) * (curVel?.z || 0)
-      )
-      const expectedHorizSpeed = Math.abs(currentSpeed.current) * 0.5
-      if (actualHorizSpeed < expectedHorizSpeed && vY > -2) {
-        // We're stuck on something — boost upward
-        vY = Math.max(vY, 3.0)
-      }
-    }
+    const vY = (curVel && !isNaN(curVel.y)) ? curVel.y : 0
 
     _vel.set(
       (_forward.x * currentSpeed.current) || 0,

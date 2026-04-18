@@ -309,17 +309,6 @@ function EnemyTank({ enemyData, playerPositionRef }) {
     }
     const vy = (curVel && !isNaN(curVel.y)) ? curVel.y : 0
 
-    // Slope climbing boost — same as player tank
-    let finalVY = vy
-    if (finalSpeed > 0.5) {
-      const actualHorizSpeed = Math.sqrt(
-        (curVel?.x || 0) * (curVel?.x || 0) + (curVel?.z || 0) * (curVel?.z || 0)
-      )
-      if (actualHorizSpeed < finalSpeed * 0.3 && vy > -2) {
-        finalVY = Math.max(vy, 3.0)
-      }
-    }
-
     // Underground rescue — if we somehow sank below the world, teleport up
     if (currentPos[1] < -5) {
       const pPos = playerPositionRef.current || [0, 0, 0]
@@ -328,7 +317,7 @@ function EnemyTank({ enemyData, playerPositionRef }) {
       return
     }
 
-    rb.setLinvel({ x: (_forward.x * finalSpeed) || 0, y: finalVY, z: (_forward.z * finalSpeed) || 0 }, true)
+    rb.setLinvel({ x: (_forward.x * finalSpeed) || 0, y: vy, z: (_forward.z * finalSpeed) || 0 }, true)
 
     _euler.set(0, a.rotation, 0)
     _quat.setFromEuler(_euler)

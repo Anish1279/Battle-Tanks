@@ -128,9 +128,9 @@ export default function Projectile({ data }) {
       gravityScale={0.15}
       ccd
       userData={{ type: 'projectile', owner, id }}
-      onCollisionEnter={handleCollision}
+      onIntersectionEnter={handleCollision}
     >
-      <BallCollider args={[PHYSICS.shellRadius * 2]} collisionGroups={collisionMask} />
+      <BallCollider args={[PHYSICS.shellRadius * 2]} sensor collisionGroups={collisionMask} />
 
       {/* Shell body — elongated sphere with emissive glow */}
       <mesh scale={[0.2, 0.2, 0.5]}>

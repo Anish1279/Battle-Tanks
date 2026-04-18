@@ -130,8 +130,8 @@ export const PHYSICS = {
   terrainRestitution: 0.05,
   tankLinearDamping: 0.5,
   tankAngularDamping: 5.0,
-  tankMass: 200,
-  enemyMass: 160,
+  tankMass: 1500,
+  enemyMass: 100,
   shellRadius: 0.15,
   shellLifetime: 4,
 }
