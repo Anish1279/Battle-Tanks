@@ -1,7 +1,7 @@
 import { useRef, useMemo, useCallback, memo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useGLTF, Html } from '@react-three/drei'
-import { RigidBody, CuboidCollider, interactionGroups } from '@react-three/rapier'
+import { RigidBody, CuboidCollider, BallCollider, interactionGroups } from '@react-three/rapier'
 import * as THREE from 'three'
 import { useGameStore } from '../store/gameStore'
 import { PHYSICS, TANK_TARGET_SIZE, GROUPS } from '../utils/constants'
@@ -308,7 +308,27 @@ function EnemyTank({ enemyData, playerPositionRef }) {
       curVel = { x: 0, y: 0, z: 0 }
     }
     const vy = (curVel && !isNaN(curVel.y)) ? curVel.y : 0
-    rb.setLinvel({ x: (_forward.x * finalSpeed) || 0, y: vy, z: (_forward.z * finalSpeed) || 0 }, true)
+
+    // Slope climbing boost — same as player tank
+    let finalVY = vy
+    if (finalSpeed > 0.5) {
+      const actualHorizSpeed = Math.sqrt(
+        (curVel?.x || 0) * (curVel?.x || 0) + (curVel?.z || 0) * (curVel?.z || 0)
+      )
+      if (actualHorizSpeed < finalSpeed * 0.3 && vy > -2) {
+        finalVY = Math.max(vy, 3.0)
+      }
+    }
+
+    // Underground rescue — if we somehow sank below the world, teleport up
+    if (currentPos[1] < -5) {
+      const pPos = playerPositionRef.current || [0, 0, 0]
+      rb.setTranslation({ x: pPos[0] + (Math.random() - 0.5) * 40, y: 25, z: pPos[2] + (Math.random() - 0.5) * 40 }, true)
+      rb.setLinvel({ x: 0, y: 0, z: 0 }, true)
+      return
+    }
+
+    rb.setLinvel({ x: (_forward.x * finalSpeed) || 0, y: finalVY, z: (_forward.z * finalSpeed) || 0 }, true)
 
     _euler.set(0, a.rotation, 0)
     _quat.setFromEuler(_euler)
@@ -345,9 +365,15 @@ function EnemyTank({ enemyData, playerPositionRef }) {
       colliders={false}
       userData={{ type: 'enemy', enemyId: enemyData.id }}
     >
+      {/* Compound collider: cuboid body + ball belly for smooth terrain traversal */}
       <CuboidCollider
-        args={modelInfo.colliderHalf}
-        position={modelInfo.colliderPos}
+        args={[modelInfo.colliderHalf[0], modelInfo.colliderHalf[1] * 0.6, modelInfo.colliderHalf[2]]}
+        position={[0, modelInfo.colliderPos[1] + modelInfo.colliderHalf[1] * 0.4, 0]}
+        collisionGroups={ENEMY_COLLISION_GROUPS}
+      />
+      <BallCollider
+        args={[Math.min(modelInfo.colliderHalf[0], modelInfo.colliderHalf[2]) * 0.8]}
+        position={[0, modelInfo.colliderHalf[1] * 0.4, 0]}
         collisionGroups={ENEMY_COLLISION_GROUPS}
       />
 

@@ -166,7 +166,7 @@ export const WORLD = {
   maxEnemies: 6,
   minSpawnDistance: 80,
   maxSpawnDistance: 160,
-  playerSpawnPosition: [0, 12, 0],
+  playerSpawnPosition: [0, 25, 0],
 }
 
 // ── Cover / Obstacle Definitions ────────────────────────────────────

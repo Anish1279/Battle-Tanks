@@ -14,7 +14,7 @@ export default function EnemyManager({ playerPositionRef }) {
     
     return [
       playerPos[0] + Math.cos(angle) * distance,
-      12, // High Y coordinate so they fall safely onto the terrain
+      25, // Spawn well above the highest terrain peak — gravity will settle them on top
       playerPos[2] + Math.sin(angle) * distance
     ]
   }
